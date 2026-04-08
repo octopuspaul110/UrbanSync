@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Chillax-Variable.ttf</string>
+		<string>ClashDisplay-Variable.ttf</string>
+		<string>PlusJarkartaSans-Bold.ttf</string>
+		<string>PlusJarkartaSans-BoldItalic.ttf</string>
+		<string>PlusJarkartaSans-ExtraBold.ttf</string>
+		<string>PlusJarkartaSans-ExtraBoldItalic.ttf</string>
+		<string>PlusJarkartaSans-ExtraLight.ttf</string>
+		<string>PlusJarkartaSans-ExtraLightItalic.ttf</string>
+		<string>PlusJarkartaSans-Italic.ttf</string>
+		<string>PlusJarkartaSans-Light.ttf</string>
+		<string>PlusJarkartaSans-LightItalic.ttf</string>
+		<string>PlusJarkartaSans-Medium.ttf</string>
+		<string>PlusJarkartaSans-MediumItalic.ttf</string>
+		<string>PlusJarkartaSans-Regular.ttf</string>
+		<string>PlusJarkartaSans-SemiBold.ttf</string>
+		<string>PlusJarkartaSans-SemiBoldITalic.ttf</string>
+	</array>
+</dict>
+</plist>
