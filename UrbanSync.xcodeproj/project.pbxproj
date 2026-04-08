@@ -13,10 +13,12 @@
 		8FE6C9CD2F86D65B00472516 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9CC2F86D65B00472516 /* GoogleSignIn */; };
 		8FE6C9CF2F86D65B00472516 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9CE2F86D65B00472516 /* GoogleSignInSwift */; };
 		8FE6C9D22F86D6D600472516 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9D12F86D6D600472516 /* Kingfisher */; };
+		8FE6C9D82F86DFA300472516 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 8FE6C9D72F86DFA300472516 /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		8F2DB5572F866302002F922A /* UrbanSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UrbanSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FE6C9D72F86DFA300472516 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -60,6 +62,7 @@
 		8F2DB54E2F866302002F922A = {
 			isa = PBXGroup;
 			children = (
+				8FE6C9D72F86DFA300472516 /* .gitignore */,
 				8F2DB5592F866302002F922A /* UrbanSync */,
 				8F2DB5582F866302002F922A /* Products */,
 			);
@@ -148,6 +151,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FE6C9D82F86DFA300472516 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
