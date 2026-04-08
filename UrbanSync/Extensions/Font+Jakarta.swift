@@ -33,19 +33,19 @@ extension Font {
 }
 
 enum JakartaWeight : String {
-    case regular            = "PlusJakartaSans-Regular"
-    case medium             = "PlusJakartaSans-Medium"
-    case semibold           = "PlusJakartaSans-Semibold"
-    case bold               = "PlusJakartaSans-Bold"
-    case extraBold          = "PlusJakartaSans-ExtraBold"
-    case italic             = "PlusJakartaSans-Italic"
-    case boldItalic         = "PlusJakartaSans-BoldItalic"
-    case extraLightItalic   = "PlusJakartaSans-ExtraLightItalic"
-    case Light              = "PlusJakartaSans-Light"
-    case LightItalic        = "PlusJakartaSans-LightItalic"
-    case MediumItalic       = "PlusJakartaSans-MediumItalic"
-    case semiBoldItalic     = "PlusJakartaSans-SemiBoldItalic"
-    case semiBold           = "PlusJakartaSans-SemiBold"
+    case regular                        = "PlusJakartaSans-Regular"
+    case medium                         = "PlusJakartaSans-Medium"
+    case semibold                       = "PlusJakartaSans-Semibold"
+    case bold                           = "PlusJakartaSans-Bold"
+    case extraBold                      = "PlusJakartaSans-ExtraBold"
+    case italic                         = "PlusJakartaSans-Italic"
+    case boldItalic                     = "PlusJakartaSans-BoldItalic"
+    case extraLightItalic               = "PlusJakartaSans-ExtraLightItalic"
+    case Light                          = "PlusJakartaSans-Light"
+    case LightItalic                    = "PlusJakartaSans-LightItalic"
+    case MediumItalic                   = "PlusJakartaSans-MediumItalic"
+    case semiBoldItalic                 = "PlusJakartaSans-SemiBoldItalic"
+    case semiBold                       = "PlusJakartaSans-SemiBold"
     
     var fontName : String {
         rawValue

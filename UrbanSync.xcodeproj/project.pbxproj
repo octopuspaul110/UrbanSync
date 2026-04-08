@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8FE6C9C62F86D4E300472516 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9C52F86D4E300472516 /* FirebaseAnalytics */; };
+		8FE6C9C82F86D4E300472516 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9C72F86D4E300472516 /* FirebaseAuth */; };
+		8FE6C9CA2F86D4E300472516 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9C92F86D4E300472516 /* FirebaseMessaging */; };
+		8FE6C9CD2F86D65B00472516 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9CC2F86D65B00472516 /* GoogleSignIn */; };
+		8FE6C9CF2F86D65B00472516 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9CE2F86D65B00472516 /* GoogleSignInSwift */; };
+		8FE6C9D22F86D6D600472516 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9D12F86D6D600472516 /* Kingfisher */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		8F2DB5572F866302002F922A /* UrbanSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UrbanSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +45,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FE6C9D22F86D6D600472516 /* Kingfisher in Frameworks */,
+				8FE6C9CF2F86D65B00472516 /* GoogleSignInSwift in Frameworks */,
+				8FE6C9CA2F86D4E300472516 /* FirebaseMessaging in Frameworks */,
+				8FE6C9CD2F86D65B00472516 /* GoogleSignIn in Frameworks */,
+				8FE6C9C62F86D4E300472516 /* FirebaseAnalytics in Frameworks */,
+				8FE6C9C82F86D4E300472516 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +93,12 @@
 			);
 			name = UrbanSync;
 			packageProductDependencies = (
+				8FE6C9C52F86D4E300472516 /* FirebaseAnalytics */,
+				8FE6C9C72F86D4E300472516 /* FirebaseAuth */,
+				8FE6C9C92F86D4E300472516 /* FirebaseMessaging */,
+				8FE6C9CC2F86D65B00472516 /* GoogleSignIn */,
+				8FE6C9CE2F86D65B00472516 /* GoogleSignInSwift */,
+				8FE6C9D12F86D6D600472516 /* Kingfisher */,
 			);
 			productName = UrbanSync;
 			productReference = 8F2DB5572F866302002F922A /* UrbanSync.app */;
@@ -107,6 +128,11 @@
 			);
 			mainGroup = 8F2DB54E2F866302002F922A;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8FE6C9C42F86D4E300472516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				8FE6C9CB2F86D65B00472516 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				8FE6C9D02F86D6D600472516 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8F2DB5582F866302002F922A /* Products */;
 			projectDirPath = "";
@@ -347,6 +373,66 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8FE6C9C42F86D4E300472516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.12.0;
+			};
+		};
+		8FE6C9CB2F86D65B00472516 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.1.0;
+			};
+		};
+		8FE6C9D02F86D6D600472516 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.8.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8FE6C9C52F86D4E300472516 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FE6C9C42F86D4E300472516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		8FE6C9C72F86D4E300472516 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FE6C9C42F86D4E300472516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		8FE6C9C92F86D4E300472516 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FE6C9C42F86D4E300472516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		8FE6C9CC2F86D65B00472516 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FE6C9CB2F86D65B00472516 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		8FE6C9CE2F86D65B00472516 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FE6C9CB2F86D65B00472516 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
+		8FE6C9D12F86D6D600472516 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FE6C9D02F86D6D600472516 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8F2DB54F2F866302002F922A /* Project object */;
 }
