@@ -32,5 +32,11 @@
 		<string>PlusJarkartaSans-SemiBold.ttf</string>
 		<string>PlusJarkartaSans-SemiBoldITalic.ttf</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>UrbanSync uses your location to find events near you.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>UrbanSync uses the camera to capture event photos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>UrbanSync accesses photos for your profile and event gallery.</string>
 </dict>
 </plist>

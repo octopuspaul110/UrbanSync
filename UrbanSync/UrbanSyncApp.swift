@@ -14,7 +14,7 @@ struct UrbanSyncApp: App {
     
     init() {
         FirebaseApp.configure()
-        NotificationService.shared.requestPermission()
+//        NotificationService.shared.requestPermission()
     }
     var body: some Scene {
         WindowGroup {
