@@ -123,7 +123,8 @@ struct ProfileSetupView: View {
                     .urbanField()
                     .onChanged(of : bio){
                         _,newValue in
-                        if newValue.count > 150 {bio = String(newValue.prefix(150))}
+                        if newValue.count > 150 {
+                            bio = String(newValue.prefix(150))}
                     }
                 Text("\(bio.count)/150")
                     .font(.jakartaCaption2)
