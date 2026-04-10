@@ -60,8 +60,10 @@ struct GlowingProgressBar: View {
         }
         .frame(height : 6)
         .onAppear{
+//            pulse speed increases with progress
+            let pulseDuration:TimeInterval = progress > 0.8 ? 0.8 : (progress > 0.5 ? 1.5 : 2.5)
             withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses:true)){
-                glowIntensity = 0.8
+                glowIntensity = progress > 0.8 ? 1.0 : 0.7
             }
         }
     }

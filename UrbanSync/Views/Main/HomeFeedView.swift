@@ -82,7 +82,7 @@ struct HomeFeedView: View {
             }
             .navigationTitle("UrbanSync")
             .navigationDestination(for: UUID.self){ eventId in
-                EventDetailView(eventID: eventId)
+                EventDetailView(eventId: eventId)
             }
             .task {
                 if feedVM.events.isEmpty{

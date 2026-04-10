@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Kingfisher
+import MapKit
 
 struct EventDetailView: View {
     let eventId : UUID
@@ -131,6 +132,59 @@ struct EventDetailView: View {
 //                            Venue
                             if let venue = event.venueName {
                                 detailRow(icon : "mappin.and.ellipse",text : "\(venue)\(event.city.map{",\($0)"} ?? "")")
+                            }
+                            if let lat = event.latitude, let lng = event.longitude{
+                                VStack(spacing : 12){
+//                                    Small map preview showing the event pin.
+                                    Map(initialPosition : .region(MKCoordinateRegion(
+                                        center: CLLocationCoordinate2D(latitude: lat, longitude: lng),
+                                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                                    ))){
+                                        Marker(event.venueName >> event.title,coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lng))
+                                            .tint(Color.categoryColor(for: event.category ?? ""))
+                                    }
+                                    .frame(height: 150)
+                                    .cornerRadius(12)
+                                    .allowsHitTesting(false) //Prevent map gestures; it is just a preview.
+                                    
+//                                    Direction Buttons
+                                    HStack(spacing : 12){
+//                                        Apple Maps button
+                                        Button {
+//                                            Apple Maps URL scheme.
+//                                            "daddr" = destination address (lat,lng)
+//                                            "dirflg=d = driving directions.
+                                            let url = URL(string : "http://maps.apple.com/?daddr=\(lat),\(lng)&dirflg=d")!
+                                        } label : {
+                                            Label("Apple Maps",systemImage : "map.fill")
+                                                .font(.jakartaSubheadline)
+                                                .frame(maxWidth: .infinity)
+                                                .padding(.vertical,10)
+                                                .background(Color.urbanSurface)
+                                                .foregroundColor(.urbanTextPrimary)
+                                                .cornerRadius(10)
+                                        }
+//                                        Google Maps button
+                                        Button {
+                                            let googleMapsURL = URL(string: "comgooglemaps://?daddr=\(lat),\(lng)&directionsmode=driving")!
+//                                            Google Maps URL scheme
+                                            let webURL = URL(string: "https://www.google.com/maps/dir/?api=1&destination=\(lat),\(lng)")!
+                                            if UIApplication.shared.canOpenURL(googleMapsURL) {
+                                                UIApplication.shared.open(googleMapsURL)
+                                            } else {
+                                                UIApplication.shared.open(webURL)
+                                            }
+                                        } label : {
+                                            Label("Google Maps",systemImage: "location.fill")
+                                                .font(.jakarataSubheadline)
+                                                .frame(maxWidth: .infinity)
+                                                .padding(.vertical,10)
+                                                .background(Color.urbanSurface)
+                                                .foregroundColor(.urbanTextPrimary)
+                                                .cornerRadius(10)
+                                        }
+                                    }
+                                }.padding(.top,8)
                             }
                             
 //                            RSVP Count

@@ -300,6 +300,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UrbanSync/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "UrbanSync uses the camera to capture event photos.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "UrbanSync uses your location to find events near you.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "UrbanSync accesses photos for your profile and event gallery.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -333,6 +336,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = UrbanSync/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "UrbanSync uses the camera to capture event photos.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "UrbanSync uses your location to find events near you.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "UrbanSync accesses photos for your profile and event gallery.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
