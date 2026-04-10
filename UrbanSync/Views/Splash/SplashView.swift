@@ -22,7 +22,7 @@ struct SplashView: View {
             VStack(spacing : 16) {
 //                App icon/logo
                 Image(systemName: "bolt.circle.fill")
-                    .font(.system(size: 80))
+                    .font(.jakartaLargeTitle)
                     .foregroundStyle(
                         LinearGradient(
                             colors      : [.urbanAccent,.urbanCoral],
@@ -31,11 +31,11 @@ struct SplashView: View {
                         )
                     )
                 Text("UrbanSync")
-                    .font(.system(size: 36,weight : .bold,design: .rounded))
+                    .font(.jakartaBody)
                     .foregroundColor(.urbanTextPrimary)
                 
                 Text("Events. Culture. Community.")
-                    .font(.subheadline)
+                    .font(.jakartaSubheadline)
                     .foregroundColor(.urbanTextSecondary)
             }
             .opacity(opacity)

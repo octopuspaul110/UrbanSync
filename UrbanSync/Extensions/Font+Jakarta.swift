@@ -30,6 +30,7 @@ extension Font {
     static let jakartaItalicMedium      = Font.custom("PlusJakartaSans-MediumItalic", size: 15)
     static let jakartaItalicSemibold    = Font.custom("PlusJakartaSans-semiBoldItalic", size: 17)
     static let jakartaItalicbold        = Font.custom("PlusJakartaSans-BoldItalic", size: 17)
+    static let jakartaCaption2          = Font.custom("PlusJakartaSans-Medium", size: 11)
 }
 
 enum JakartaWeight : String {
