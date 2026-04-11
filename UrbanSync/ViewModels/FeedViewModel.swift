@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import SwiftUI
+import Combine
+import FirebaseAuth
 
 
 @Observable
@@ -17,6 +20,7 @@ class FeedViewModel {
     var hasMore = true
     private var offset = 0
     private let limit = 20
+    
     
 //    Fetch personalized feed from the backend
     func fetchFeed(refresh : Bool = false) async {

@@ -1,5 +1,5 @@
 {
-  "originHash" : "d57bf1118b2f76ca4faccc75bab47352bef3b459627c847e44f6d85862d97e23",
+  "originHash" : "ef33ff3a5d22a71d842f429e6cd829597fe5f99660ce292bf549be8bdb85d228",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -152,6 +152,15 @@
       "state" : {
         "revision" : "540318ecedd63d883069ae7f1ed811a2df00b6ac",
         "version" : "2.4.0"
+      }
+    },
+    {
+      "identity" : "uiimagecolors",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jathu/UIImageColors",
+      "state" : {
+        "revision" : "e49e6c32ea556e9fa0109dc79686bea4a10d41a2",
+        "version" : "2.2.0"
       }
     }
   ],

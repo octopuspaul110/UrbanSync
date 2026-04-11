@@ -7,25 +7,51 @@
 
 import SwiftUI
 import Combine
+import UIImageColors
 
 struct BillboardImage: View {
     let url: String?
     let category: String
+    var onColorExtracted : (Color) -> Void
 
     var body: some View {
         if let urlString = url, let imageUrl = URL(string: urlString) {
             AsyncImage(url: imageUrl) { phase in
                 switch phase {
                 case .success(let image):
-                    image.resizable().scaledToFill()
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .onAppear{
+                            extractColor(from:image)
+                        }
                 case .failure, .empty:
                     fallbackView
+                        .onAppear {
+                            onColorExtracted(fallbackColor.opacity(0.8))
+                        }
                 @unknown default:
                     fallbackView
                 }
             }
         } else {
             fallbackView
+                .onAppear {
+                    onColorExtracted(fallbackColor.opacity(0.6))
+                }
+        }
+    }
+    private func extractColor(from image: Image) {
+        let renderer = ImageRenderer(content: image.resizable().frame(width: 100, height: 100))
+        guard let uiImage = renderer.uiImage else {return}
+        
+        Task {
+            let colors = await uiImage.getColors(quality: .low)
+            if let dominant = colors?.background {
+                await MainActor.run {
+                    onColorExtracted(Color(dominant).opacity(0.85))
+                }
+            }
         }
     }
 
@@ -76,47 +102,59 @@ struct BillboardImage: View {
 struct BillboardView: View {
     let events: [Event]
     @State private var currentIndex = 0
+    @State private var featuredEvents: [Event] = []
+    @State private var backgroundColor: Color = .black
+    
+    var onColorExtracted: (Color) -> Void
     let timer = Timer.publish(every: 4, on: .main, in: .common).autoconnect()
 
 
-    @State private var featuredEvents: [Event] = []
-
     var body: some View {
-        TabView(selection: $currentIndex) {
-            ForEach(Array(featuredEvents.enumerated()), id: \.offset) { index, event in
-                BillboardCard(event: event){
-                    withAnimation {
-                        featuredEvents.removeAll { $0.id == event.id }
+        ZStack {
+            backgroundColor
+                .ignoresSafeArea()
+                .animation(.easeInOut(duration: 0.8),value: backgroundColor)
+            
+            TabView(selection: $currentIndex) {
+                ForEach(Array(featuredEvents.enumerated()), id: \.offset) { index, event in
+                    BillboardCard(event: event){
+                        withAnimation {
+                            featuredEvents.removeAll { $0.id == event.id }
                             if currentIndex >= featuredEvents.count {
                                 currentIndex = max(0, featuredEvents.count - 1)
+                            }
                         }
                     }
-                }
-                .tag(index)
-            }
-        }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .frame(height: 420)
-        .overlay(alignment: .bottomTrailing) {
-            // Dot indicators
-            HStack(spacing: 5) {
-                ForEach(0..<featuredEvents.count, id: \.self) { i in
-                    Capsule()
-                        .fill(i == currentIndex ? Color.white : Color.white.opacity(0.35))
-                        .frame(width: i == currentIndex ? 18 : 6, height: 6)
-                        .animation(.spring(duration: 0.3), value: currentIndex)
+                    onColorExtracted: { color in
+                       backgroundColor = color
+                        onColorExtracted(color)
+                    }
+                    .tag(index)
                 }
             }
-            .padding([.bottom, .trailing], 14)
-        }
-        .onReceive(timer) { _ in
-            guard featuredEvents.count > 1 else { return }
-            withAnimation {
-                currentIndex = (currentIndex + 1) % featuredEvents.count
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: 420)
+            .overlay(alignment: .bottomTrailing) {
+                // Dot indicators
+                HStack(spacing: 5) {
+                    ForEach(0..<featuredEvents.count, id: \.self) { i in
+                        Capsule()
+                            .fill(i == currentIndex ? Color.white : Color.white.opacity(0.35))
+                            .frame(width: i == currentIndex ? 18 : 6, height: 6)
+                            .animation(.spring(duration: 0.3), value: currentIndex)
+                    }
+                }
+                .padding([.bottom, .trailing], 14)
             }
-        }
-        .onAppear{
-            featuredEvents = Array(events.shuffled().prefix(5))
+            .onReceive(timer) { _ in
+                guard featuredEvents.count > 1 else { return }
+                withAnimation {
+                    currentIndex = (currentIndex + 1) % featuredEvents.count
+                }
+            }
+            .onAppear{
+                featuredEvents = Array(events.shuffled().prefix(5))
+            }
         }
     }
 }
@@ -124,12 +162,17 @@ struct BillboardView: View {
 struct BillboardCard: View {
     let event: Event
     var onSave: () -> Void
+    var onColorExtracted : (Color) -> Void
     @State private var saved = false
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
             // Cover image
-            BillboardImage(url: event.coverImageUrl, category: event.category ?? "")
+            BillboardImage(
+                url: event.coverImageUrl,
+                category: event.category ?? "",
+                onColorExtracted : onColorExtracted
+            )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .clipped()
 
@@ -204,7 +247,7 @@ struct BillboardCard: View {
                         
                     }
                     
-                    Text(event.title ?? "")
+                    Text(event.title)
                         .font(.jakartaTitle2.weight(.semibold))
                         .foregroundColor(.white)
                         .lineLimit(2)

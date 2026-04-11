@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F94887B2F89BFA20014E2AC /* UIImageColors in Frameworks */ = {isa = PBXBuildFile; productRef = 8F94887A2F89BFA20014E2AC /* UIImageColors */; };
 		8FE6C9C62F86D4E300472516 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9C52F86D4E300472516 /* FirebaseAnalytics */; };
 		8FE6C9C82F86D4E300472516 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9C72F86D4E300472516 /* FirebaseAuth */; };
 		8FE6C9CA2F86D4E300472516 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE6C9C92F86D4E300472516 /* FirebaseMessaging */; };
@@ -52,6 +53,7 @@
 				8FE6C9CA2F86D4E300472516 /* FirebaseMessaging in Frameworks */,
 				8FE6C9CD2F86D65B00472516 /* GoogleSignIn in Frameworks */,
 				8FE6C9C62F86D4E300472516 /* FirebaseAnalytics in Frameworks */,
+				8F94887B2F89BFA20014E2AC /* UIImageColors in Frameworks */,
 				8FE6C9C82F86D4E300472516 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -102,6 +104,7 @@
 				8FE6C9CC2F86D65B00472516 /* GoogleSignIn */,
 				8FE6C9CE2F86D65B00472516 /* GoogleSignInSwift */,
 				8FE6C9D12F86D6D600472516 /* Kingfisher */,
+				8F94887A2F89BFA20014E2AC /* UIImageColors */,
 			);
 			productName = UrbanSync;
 			productReference = 8F2DB5572F866302002F922A /* UrbanSync.app */;
@@ -135,6 +138,7 @@
 				8FE6C9C42F86D4E300472516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				8FE6C9CB2F86D65B00472516 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				8FE6C9D02F86D6D600472516 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				8F9488792F89BFA20014E2AC /* XCRemoteSwiftPackageReference "UIImageColors" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8F2DB5582F866302002F922A /* Products */;
@@ -385,6 +389,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		8F9488792F89BFA20014E2AC /* XCRemoteSwiftPackageReference "UIImageColors" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jathu/UIImageColors";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
+			};
+		};
 		8FE6C9C42F86D4E300472516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -412,6 +424,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		8F94887A2F89BFA20014E2AC /* UIImageColors */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F9488792F89BFA20014E2AC /* XCRemoteSwiftPackageReference "UIImageColors" */;
+			productName = UIImageColors;
+		};
 		8FE6C9C52F86D4E300472516 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8FE6C9C42F86D4E300472516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
