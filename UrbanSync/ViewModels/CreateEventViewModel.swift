@@ -9,56 +9,60 @@ import Foundation
 import PhotosUI
 
 struct CreateEventPayload: Encodable {
-    let title               : String
-    let description         : String
-    let category            : String
-    let visibility          : String
-    let venue_name          : String
-    let address             : String
-    let city                : String
-    let state               : String
-    let start_time          : String
-    let end_time            : String
-    let dress_code          : String
-    let gifting_enabled     : Bool
-    let max_capacity        : Int?
-    let is_paid             : Bool?
-    let cover_image_url     : String?
-    let metadata            : [String: String]?
-    let creator_name        : String?
-    let recurrence          : String
-    let recurrence_days     : [Int]?
-    let recurrence_interval : Int?
-    let recurrence_end_date : String?
+    let title                   : String
+    let description             : String
+    let category                : String
+    let visibility              : String
+    let venue_name              : String
+    let address                 : String
+    let city                    : String
+    let state                   : String
+    let start_time              : String
+    let end_time                : String
+    let dress_code              : String
+    let gifting_enabled         : Bool
+    let max_capacity            : Int?
+    let is_paid                 : Bool?
+    let cover_image_url         : String?
+    let metadata                : [String: String]?
+    let creator_name            : String?
+    let recurrence              : String
+    let recurrence_days         : [Int]?
+    let recurrence_interval     : Int?
+    let recurrence_end_date     : String?
     
 }
 
 @Observable
 class CreateEventViewModel {
 //    For fields
-    var title               = ""
-    var description         = ""
-    var category            = "celebration"
-    var visibility          = "public"
-    var VenueName           = ""
-    var address             = ""
-    var city                = ""
-    var state               = ""
-    var startDate           = Date().addingTimeInterval(86400) // Default : tomorrow
-    var endDate             = Date().addingTimeInterval(86400 + 3600 * 4) // 4 hours after start
-    var dressCode           = ""
-    var giftingEnabled      = false
-    var maxCapacity         : Int?
-    var isPaid              = false
-    var coverImageUrl       : String?           // set after Cloudinary upload
-    var metadata            : [String: String]?
-    var selectedImage       : UIImage?
-    var isUploadingImage    = false
-    var creatorName         : String?
-    var recurrence          = "none"
-    var recurrenceDays      : [Int] = []
-    var recurrenceInterval  = 1
-    var recurrenceEndDate   : Date? = nil
+    var title                   = ""
+    var description             = ""
+    var category                = "celebration"
+    var visibility              = "public"
+    var VenueName               = ""
+    var address                 = ""
+    var city                    = ""
+    var state                   = ""
+    var startDate               = Date().addingTimeInterval(86400) // Default : tomorrow
+    var endDate                 = Date().addingTimeInterval(86400 + 3600 * 4) // 4 hours after start
+    var dressCode               = ""
+    var giftingEnabled          = false
+    var maxCapacity             : Int?
+    var isPaid                  = false
+    var coverImageUrl           : String?           // set after Cloudinary upload
+    var metadata                : [String: String]?
+    var selectedImage           : UIImage?
+    var isUploadingImage        = false
+    var creatorName             : String?
+    var recurrence              = "none"
+    var recurrenceDays          : [Int] = []
+    var recurrenceInterval      = 1
+    var recurrenceEndDate       : Date? = nil
+    
+    var createdJoinCode         : String?
+    var createdPrivateJoinCode  : String?
+    var createdSlug             : String?
     
     
 //    State
@@ -101,7 +105,10 @@ class CreateEventViewModel {
                 "/api/events",
                 body: payload
             )
-            createdEventId = response.id
+            createdEventId          = response.id
+            createdJoinCode         = response.joinCode
+            createdPrivateJoinCode  = response.privateJoinCode
+            createdSlug             = response.slug
             return true
         } catch {
             errorMessage = error.localizedDescription

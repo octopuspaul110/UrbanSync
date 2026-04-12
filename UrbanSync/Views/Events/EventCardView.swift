@@ -51,10 +51,32 @@ struct EventCardView: View {
             //            Event info
             VStack(alignment: .leading,spacing : 8) {
                 //                Category chip
+                // Category chip
                 if let cat = event.category {
-                    Text(cat.replacingOccurrences(of: "_", with: " ").capitalized)
-                        .font(.jakartaCaption.weight(.semibold))
-                        .foregroundColor(Color.categoryColor(for: cat))
+                    HStack(spacing: 6) {
+                        Text(cat.replacingOccurrences(of: "_", with: " ").capitalized)
+                            .font(.jakartaCaption.weight(.semibold))
+                            .foregroundColor(Color.categoryColor(for: cat))
+
+                        // Recurring pill
+                        if let recurrence = event.recurrence, recurrence != "none" {
+                            HStack(spacing: 3) {
+                                Image(systemName: "arrow.clockwise")
+                                    .font(.system(size: 8, weight: .medium))
+                                Text("Recurring")
+                                    .font(.system(size: 10, weight: .medium))
+                            }
+                            .foregroundColor(.urbanTextTertiary)
+                            .padding(.horizontal, 7)
+                            .padding(.vertical, 3)
+                            .background(Color.urbanSurface)
+                            .overlay(
+                                Capsule()
+                                    .stroke(Color.urbanTextTertiary.opacity(0.3), lineWidth: 0.5)
+                            )
+                            .clipShape(Capsule())
+                        }
+                    }
                 }
                 
                 //                Title

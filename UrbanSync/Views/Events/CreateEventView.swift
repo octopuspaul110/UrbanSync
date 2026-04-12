@@ -25,6 +25,10 @@ struct CreateEventView: View {
     @State private var agenda       = ""
     @State private var dressTips    = ""
     
+    @State private var createdJoinCode        = ""
+    @State private var createdPrivateJoinCode = ""
+    @State private var slug                   = ""
+    
     let categories = [
         ("celebration", "Celebrations"),
         ("nightlife", "Nightlife"),
@@ -73,25 +77,9 @@ struct CreateEventView: View {
                         }
                         
 //                        Venue
-                        formField(title : "Venue Name"){
-                            TextField("e.g Eko Hotel, Victoria Island",text: $vm.VenueName)
-                        }
-                        formField(title : "City"){
-                            TextField("Lagos",text : $vm.city)
-                        }
-                        formField(title: "State") {
-                            TextField("e.g Lagos, Abuja", text: $vm.state)
-                        }
+                        venueSection
 //                        Date and time
-                        formField(title : "Start Date & Time"){
-                            DatePicker("",selection: $vm.startDate, in : Date()...)
-                                .datePickerStyle(.compact)
-                                .tint(.urbanAccent)
-                        }
-                        formField(title : "End Date & Time"){
-                            DatePicker("",selection: $vm.endDate, in: vm.startDate...)
-                                .tint(.urbanAccent)
-                        }
+                        dateSection
                         
                         // Dress Code
                         formField(title: "Dress Code") {
@@ -109,103 +97,7 @@ struct CreateEventView: View {
                         }
                         
                         // Recurrence
-                        formField(title: "Repeat") {
-                            Picker("", selection: $vm.recurrence) {
-                                Text("Does not repeat").tag("none")
-                                Text("Daily").tag("daily")
-                                Text("Weekly").tag("weekly")
-                                Text("Biweekly").tag("biweekly")
-                                Text("Monthly").tag("monthly")
-                                Text("Custom dates").tag("custom")
-                            }
-                            .pickerStyle(.menu)
-                            .tint(.urbanAccent)
-                        }
-
-                        // Show extra recurrence options only when recurring
-                        if vm.recurrence != "none" {
-
-                            // Day picker for weekly/biweekly
-                            if vm.recurrence == "weekly" || vm.recurrence == "biweekly" {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Repeat on")
-                                        .font(.caption)
-                                        .foregroundColor(.urbanTextPrimary)
-
-                                    let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-                                    HStack(spacing: 8) {
-                                        ForEach(0..<7, id: \.self) { index in
-                                            let isSelected = vm.recurrenceDays.contains(index)
-                                            Button {
-                                                if isSelected {
-                                                    vm.recurrenceDays.removeAll { $0 == index }
-                                                } else {
-                                                    vm.recurrenceDays.append(index)
-                                                }
-                                            } label: {
-                                                Text(days[index])
-                                                    .font(.system(size: 11, weight: .medium))
-                                                    .frame(width: 34, height: 34)
-                                                    .background(isSelected ? Color.urbanAccent : Color.urbanSurface)
-                                                    .foregroundColor(isSelected ? .white : .urbanTextSecondary)
-                                                    .clipShape(Circle())
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            // Interval picker for daily/monthly
-                            if vm.recurrence == "daily" || vm.recurrence == "monthly" {
-                                formField(title: vm.recurrence == "daily" ? "Every N days" : "Every N months") {
-                                    Stepper("\(vm.recurrenceInterval)", value: $vm.recurrenceInterval, in: 1...12)
-                                        .foregroundColor(.urbanTextPrimary)
-                                }
-                            }
-
-                            // End date
-                            VStack(alignment: .leading, spacing: 8) {
-                                Toggle("Set end date", isOn: Binding(
-                                    get: { vm.recurrenceEndDate != nil },
-                                    set: { vm.recurrenceEndDate = $0 ? Date().addingTimeInterval(86400 * 30) : nil }
-                                ))
-                                .tint(.urbanAccent)
-                                .foregroundColor(.urbanTextPrimary)
-                                .padding()
-                                .background(Color.urbanSurface)
-                                .cornerRadius(12)
-
-                                if let _ = vm.recurrenceEndDate {
-                                    DatePicker(
-                                        "",
-                                        selection: Binding(
-                                            get: { vm.recurrenceEndDate ?? Date() },
-                                            set: { vm.recurrenceEndDate = $0 }
-                                        ),
-                                        in: vm.endDate...,
-                                        displayedComponents: .date
-                                    )
-                                    .datePickerStyle(.compact)
-                                    .tint(.urbanAccent)
-                                    .padding()
-                                    .background(Color.urbanSurface)
-                                    .cornerRadius(12)
-                                }
-                            }
-
-                            // Info pill
-                            HStack(spacing: 8) {
-                                Image(systemName: "info.circle.fill")
-                                    .foregroundColor(.urbanAccent)
-                                    .font(.system(size: 14))
-                                Text(recurrenceSummary)
-                                    .font(.jakartaCaption)
-                                    .foregroundColor(.urbanTextSecondary)
-                            }
-                            .padding(12)
-                            .background(Color.urbanAccent.opacity(0.1))
-                            .cornerRadius(10)
-                        }
+                        recurrenceSection
                         
                         // Max Capacity
                         formField(title: "Max Capacity (optional)") {
@@ -213,21 +105,8 @@ struct CreateEventView: View {
                                 .keyboardType(.numberPad)
                         }
                         
-//                        Gifting Toggle
-                        Toggle("Enable Gifting",isOn: $vm.giftingEnabled)
-                            .tint(.urbanAccent)
-                            .foregroundColor(.urbanTextPrimary)
-                            .padding()
-                            .background(Color.urbanSurface)
-                            .cornerRadius(12)
-                        
-//                        Paid event
-                        Toggle("Paid Event", isOn: $vm.isPaid)
-                            .tint(.urbanAccent)
-                            .foregroundColor(.urbanTextPrimary)
-                            .padding()
-                            .background(Color.urbanSurface)
-                            .cornerRadius(12)
+//                        Gifting Toggle and Paid event
+                        togglesSection
                         
 //                        Metadata section
                         metadataSection
@@ -239,32 +118,7 @@ struct CreateEventView: View {
                                 .padding()
                         }
 //                        Submit
-                        Button{
-                            Task{
-                                buildMetadata()
-                                let success = await vm.createEvent()
-                                if success {
-                                    createdEventName = vm.title
-                                    withAnimation {
-                                        showAirplane = true
-                                    }
-                                }
-                            }
-                        } label : {
-                            HStack(spacing : 5) {
-                                Text(vm.isSubmitting ? "Creating..." : "Create Event")
-                                    .fontWeight(.bold)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(vm.title.isEmpty ? Color.urbanSurfaceLight : Color.urbanAccent)
-                                    .foregroundStyle(.white)
-                                    .cornerRadius(12)
-                                if vm.isSubmitting {
-                                    ProgressView().tint(.urbanAccent)
-                                }
-                            }
-                        }
-                        .disabled(vm.title.isEmpty || vm.isSubmitting)
+                        submitButton
                     }
                     .padding(16)
                 }
@@ -280,12 +134,162 @@ struct CreateEventView: View {
             }
             .overlay {
                 AirplaneAnimation(
-                    isShowing: $showAirplane,
-                    eventName: $createdEventName
+                    isShowing       : $showAirplane,
+                    eventName       : $createdEventName,
+                    joinCode        : $createdJoinCode,
+                    privateJoinCode : $createdPrivateJoinCode,
+                    slug            : $slug
                 ) {
                     dismiss()
                 }
             }
+        }
+    }
+    @ViewBuilder
+    private var recurrenceSection: some View {
+        formField(title: "Repeat") {
+            Picker("", selection: $vm.recurrence) {
+                Text("Does not repeat").tag("none")
+                Text("Daily").tag("daily")
+                Text("Weekly").tag("weekly")
+                Text("Biweekly").tag("biweekly")
+                Text("Monthly").tag("monthly")
+                Text("Custom dates").tag("custom")
+            }
+            .pickerStyle(.menu)
+            .tint(.urbanAccent)
+        }
+
+        if vm.recurrence != "none" {
+            if vm.recurrence == "weekly" || vm.recurrence == "biweekly" {
+                dayPickerSection
+            }
+
+            if vm.recurrence == "daily" || vm.recurrence == "monthly" {
+                formField(title: vm.recurrence == "daily" ? "Every N days" : "Every N months") {
+                    Stepper("\(vm.recurrenceInterval)", value: $vm.recurrenceInterval, in: 1...12)
+                        .foregroundColor(.urbanTextPrimary)
+                }
+            }
+
+            recurrenceEndDateSection
+
+            HStack(spacing: 8) {
+                Image(systemName: "info.circle.fill")
+                    .foregroundColor(.urbanAccent)
+                    .font(.system(size: 14))
+                Text(recurrenceSummary)
+                    .font(.jakartaCaption)
+                    .foregroundColor(.urbanTextSecondary)
+            }
+            .padding(12)
+            .background(Color.urbanAccent.opacity(0.1))
+            .cornerRadius(10)
+        }
+    }
+
+    @ViewBuilder
+    private var dayPickerSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Repeat on")
+                .font(.caption)
+                .foregroundColor(.urbanTextPrimary)
+
+            let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+            HStack(spacing: 8) {
+                ForEach(0..<7, id: \.self) { index in
+                    let isSelected = vm.recurrenceDays.contains(index)
+                    Button {
+                        if isSelected {
+                            vm.recurrenceDays.removeAll { $0 == index }
+                        } else {
+                            vm.recurrenceDays.append(index)
+                        }
+                    } label: {
+                        Text(days[index])
+                            .font(.system(size: 11, weight: .medium))
+                            .frame(width: 34, height: 34)
+                            .background(isSelected ? Color.urbanAccent : Color.urbanSurface)
+                            .foregroundColor(isSelected ? .white : .urbanTextSecondary)
+                            .clipShape(Circle())
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var recurrenceEndDateSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Toggle("Set end date", isOn: Binding(
+                get: { vm.recurrenceEndDate != nil },
+                set: { vm.recurrenceEndDate = $0 ? Date().addingTimeInterval(86400 * 30) : nil }
+            ))
+            .tint(.urbanAccent)
+            .foregroundColor(.urbanTextPrimary)
+            .padding()
+            .background(Color.urbanSurface)
+            .cornerRadius(12)
+
+            if vm.recurrenceEndDate != nil {
+                DatePicker(
+                    "",
+                    selection: Binding(
+                        get: { vm.recurrenceEndDate ?? Date() },
+                        set: { vm.recurrenceEndDate = $0 }
+                    ),
+                    in: vm.endDate...,
+                    displayedComponents: .date
+                )
+                .datePickerStyle(.compact)
+                .tint(.urbanAccent)
+                .padding()
+                .background(Color.urbanSurface)
+                .cornerRadius(12)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var togglesSection: some View {
+        Toggle("Enable Gifting", isOn: $vm.giftingEnabled)
+            .tint(.urbanAccent)
+            .foregroundColor(.urbanTextPrimary)
+            .padding()
+            .background(Color.urbanSurface)
+            .cornerRadius(12)
+
+        Toggle("Paid Event", isOn: $vm.isPaid)
+            .tint(.urbanAccent)
+            .foregroundColor(.urbanTextPrimary)
+            .padding()
+            .background(Color.urbanSurface)
+            .cornerRadius(12)
+    }
+
+    @ViewBuilder
+    private var venueSection: some View {
+        formField(title: "Venue Name") {
+            TextField("e.g Eko Hotel, Victoria Island", text: $vm.VenueName)
+        }
+        formField(title: "City") {
+            TextField("Lagos", text: $vm.city)
+        }
+        formField(title: "State") {
+            TextField("e.g Lagos, Abuja", text: $vm.state)
+        }
+    }
+
+    @ViewBuilder
+    private var dateSection: some View {
+        formField(title: "Start Date & Time") {
+            DatePicker("", selection: $vm.startDate, in: Date()...)
+                .datePickerStyle(.compact)
+                .tint(.urbanAccent)
+        }
+        formField(title: "End Date & Time") {
+            DatePicker("", selection: $vm.endDate, in: vm.startDate...)
+                .tint(.urbanAccent)
         }
     }
 //    recurrence summary
@@ -446,6 +450,37 @@ struct CreateEventView: View {
                 .cornerRadius(12)
                 .foregroundColor(.urbanTextPrimary)
         }
+    }
+    
+    @ViewBuilder
+    private var submitButton: some View {
+        Button {
+            Task {
+                buildMetadata()
+                let success = await vm.createEvent()
+                if success {
+                    createdEventName       = vm.title
+                    createdJoinCode        = vm.createdJoinCode ?? ""
+                    createdPrivateJoinCode = vm.createdPrivateJoinCode ?? ""
+                    slug                   = vm.createdSlug ?? ""       
+                    withAnimation { showAirplane = true }
+                }
+            }
+        } label: {
+            HStack(spacing: 5) {
+                Text(vm.isSubmitting ? "Creating..." : "Create Event")
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(vm.title.isEmpty ? Color.urbanSurfaceLight : Color.urbanAccent)
+                    .foregroundStyle(.white)
+                    .cornerRadius(12)
+                if vm.isSubmitting {
+                    ProgressView().tint(.urbanAccent)
+                }
+            }
+        }
+        .disabled(vm.title.isEmpty || vm.isSubmitting)
     }
 }
 

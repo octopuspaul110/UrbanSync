@@ -174,6 +174,50 @@ struct EventDetailView: View {
                                 text : event.startTime.fullFormatted
                             )
                             
+                            // Recurrence
+                            if let summary = recurrenceSummary(for: event) {
+                                VStack(alignment: .leading, spacing: 10) {
+
+                                    // Recurrence row
+                                    detailRow(icon: "arrow.clockwise", text: summary)
+
+                                    // Occurrence number — e.g "Week 12 of Lagos Friday Night"
+                                    if let occurrence = event.occurrenceNumber, let parentId = event.recurrenceParentId {
+                                        HStack(spacing: 8) {
+                                            Image(systemName: "number.circle.fill")
+                                                .foregroundColor(.urbanAccent)
+                                                .frame(width: 20)
+                                            Text("Occurrence \(occurrence) of this series")
+                                                .foregroundColor(.urbanTextSecondary)
+                                                .font(.subheadline)
+                                        }
+                                    }
+
+                                    // End date
+                                    if let endDate = event.recurrenceEndDate {
+                                        detailRow(
+                                            icon: "calendar.badge.checkmark",
+                                            text: "Series ends \(endDate.formatted(date: .abbreviated, time: .omitted))"
+                                        )
+                                    }
+
+                                    // Series pill — tappable if it's a child instance
+                                    if event.recurrenceParentId != nil {
+                                        HStack(spacing: 6) {
+                                            Image(systemName: "arrow.clockwise")
+                                                .font(.system(size: 10))
+                                            Text("Part of a recurring series")
+                                                .font(.jakartaCaption)
+                                        }
+                                        .foregroundColor(.urbanAccent)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 6)
+                                        .background(Color.urbanAccent.opacity(0.1))
+                                        .clipShape(Capsule())
+                                    }
+                                }
+                            }
+                            
 //                            Venue
                             if let venue = event.venueName {
                                 detailRow(
@@ -413,6 +457,30 @@ struct EventDetailView: View {
         case "community":     return "person.3.fill"
         case "public_square": return "megaphone.fill"
         default:              return "calendar"
+        }
+    }
+    
+    private func recurrenceSummary(for event: Event) -> String? {
+        guard let recurrence = event.recurrence, recurrence != "none" else { return nil }
+
+        let dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+        let interval = event.recurrenceInterval ?? 1
+
+        switch recurrence {
+        case "daily":
+            return interval == 1 ? "Repeats every day" : "Repeats every \(interval) days"
+        case "weekly":
+            let days = (event.recurrenceDays ?? []).sorted().map { dayNames[$0] }.joined(separator: ", ")
+            return "Repeats every week\(days.isEmpty ? "" : " on \(days)")"
+        case "biweekly":
+            let days = (event.recurrenceDays ?? []).sorted().map { dayNames[$0] }.joined(separator: ", ")
+            return "Repeats every 2 weeks\(days.isEmpty ? "" : " on \(days)")"
+        case "monthly":
+            return interval == 1 ? "Repeats every month" : "Repeats every \(interval) months"
+        case "custom":
+            return "Custom schedule"
+        default:
+            return nil
         }
     }
     
