@@ -20,13 +20,23 @@ struct HomeFeedView: View {
     @State private var scrollOffset: CGFloat = 0
     @State private var authVM = AuthViewModel()
     
+    @State private var showEventTypePicker = false
+    @State private var showOfficialCreate  = false
+    @State private var showCelebrationCreate = false
+    
+    @State private var showEventMenu = false
+    
     let categories = [
         ("celebration", "Celebrations", "party.popper.fill"),
         ("nightlife", "Nightlife", "moon.stars.fill"),
         ("tech", "Tech", "laptopcomputer"),
         ("heritage", "Heritage", "building.columns.fill"),
+        ("religious", "Religious", "hands.and.sparkles.fill"),
+        ("corporate", "Corporate", "briefcase.fill"),
+        ("community", "Community", "person.3.fill"),
+        ("public_square", "Public", "megaphone.fill"),
         ("concert", "Concerts", "music.mic"),
-        ("sports", "Sports", "sportscourt.fill")
+        ("sports", "Sports", "sportscourt.fill"),
     ]
     
     private let collapseThreshold: CGFloat = 300
@@ -49,7 +59,7 @@ struct HomeFeedView: View {
                 
                 ScrollView{
                     VStack(spacing : 0) {
-
+                        
                         // Offset tracker anchor
                         GeometryReader { geo in
                             Color.clear.preference(
@@ -58,7 +68,7 @@ struct HomeFeedView: View {
                             )
                         }
                         .frame(height: 0)
-//                        horizontal scrolling row of category buttons.
+                        //                        horizontal scrolling row of category buttons.
                         if !isScrolled {
                             ScrollView(.horizontal,showsIndicators: false){
                                 HStack(spacing : 8){
@@ -91,7 +101,7 @@ struct HomeFeedView: View {
                             }
                         }
                         
-//                        Event Cards
+                        //                        Event Cards
                         LazyVStack(spacing : 16){
                             ForEach(filteredEvents) {event in
                                 NavigationLink(value: event.id){
@@ -99,7 +109,7 @@ struct HomeFeedView: View {
                                 }
                                 .buttonStyle(.plain)
                             }
-//                            Infinite scroll trigger
+                            //                            Infinite scroll trigger
                             if feedVM.hasMore {
                                 ProgressView()
                                     .tint(.urbanAccent)
@@ -137,7 +147,7 @@ struct HomeFeedView: View {
                     }
                 }
                 
-//                Sticky top bar - always visible
+                //                Sticky top bar - always visible
                 VStack(spacing: 0 ){
                     HStack{
                         VStack(alignment: .leading){
@@ -161,7 +171,7 @@ struct HomeFeedView: View {
                                 .padding(10)
                                 .background(
                                     isScrolled
-                                        ? Color.white.opacity(0.15)
+                                    ? Color.white.opacity(0.15)
                                     : Color.clear
                                 )
                                 .clipShape(Circle())
@@ -189,8 +199,101 @@ struct HomeFeedView: View {
                     }
                 }
                 .animation(.easeInOut(duration: 0.3),value: isScrolled)
+                
+//            FAB - bottom right
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        VStack(alignment : .trailing,spacing : 12){
+//                            Menu options, slide up when showEventMenu is true
+                            if showEventMenu {
+                                VStack(alignment : .trailing, spacing: 10){
+                                    eventMenuOption(
+                                        title       : "Official Event",
+                                        subtitle    : "Tech, Concert, Conference, Nightclub...",
+                                        icon        : "building.2.fill"
+                                    ){
+                                        showEventMenu       = false
+                                        showOfficialCreate  = true
+                                    }
+                                    eventMenuOption(
+                                        title       : "Official Event",
+                                        subtitle    : "Wedding, Birthday, Owambe...",
+                                        icon        : "party.popper.fill"
+                                    ){
+                                        showEventMenu           = false
+                                        showCelebrationCreate   = true
+                                    }
+                                }
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
+                            }
+                            
+//                            FAB
+                            Button {
+                                withAnimation(.spring(duration: 0.35)) {
+                                    showEventMenu.toggle()
+                                }
+                            } label: {
+                                Image(systemName: showEventMenu ? "xmark" : "plus")
+                                    .font(.system(size : 22,weight: .medium))
+                                    .foregroundColor(.white)
+                                    .frame(width: 56,height: 56)
+                                    .background(Color.urbanAccent)
+                                    .clipShape(Circle())
+                                    .rotationEffect(.degrees(showEventMenu ? 45 : 0))
+                                    .animation(.spring(duration : 0.35), value: showEventMenu)
+                            }
+                        }
+                        .padding(.trailing,20)
+                        .padding(.bottom,32)
+                    }
+                }
             }
-            
+            .confirmationDialog("What kind of event?", isPresented: $showEventTypePicker, titleVisibility: .visible) {
+                Button("Official Event") { showOfficialCreate = true }
+                Button("Celebration")    { showCelebrationCreate = true }
+                Button("Cancel", role: .cancel) {}
+            }
+            .sheet(isPresented: $showOfficialCreate) {
+                CreateEventView()
+            }
+            .sheet(isPresented: $showCelebrationCreate) {
+                CreateCelebrationView()
+            }
+            .onTapGesture {
+                if showEventMenu {
+                    withAnimation(.spring(duration : 0.35)){
+                        showEventMenu = false
+                    }
+                }
+            }
+        }
+    }
+    @ViewBuilder
+    private func eventMenuOption(
+        title           : String,
+        subtitle        : String,
+        icon            : String,
+        action          : @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            HStack(spacing : 12){
+                VStack(alignment: .trailing) {
+                    Text(title)
+                        .font(.jakartaSubheadline.weight(.medium))
+                        .foregroundColor(.urbanTextPrimary)
+                    Text(subtitle)
+                        .font(.jakartaCaption)
+                        .foregroundColor(.urbanTextSecondary)
+                }
+                Image(systemName: icon)
+                    .font(.system(size: 16))
+                    .foregroundColor(.white)
+                    .frame(width: 40,height: 40)
+                    .background(Color.urbanAccent.opacity(0.85))
+                    .clipShape(Circle())
+            }
         }
     }
 //    filter events by selected category

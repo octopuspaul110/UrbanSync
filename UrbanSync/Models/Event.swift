@@ -7,29 +7,32 @@
 
 import Foundation
 
-struct Event: Codable, Identifiable {
-    let id: UUID
-    let title: String
-    let slug: String
-    let description: String?
-    let category: String?
-    let status: String?
-    let visibility: String?
-    let venueName: String?
-    let venueAddress: String?
-    let city: String?
-    let state: String?
-    let latitude: Double?
-    let longitude: Double?
-    let startTime: Date
-    let endTime: Date
-    let coverImageUrl: String?
-    let dressCode: String?
-    let joinCode: String
-    let privateJoinCode: String
-    let giftingEnabled: Bool
-    let maxCapacity: Int?
-    let createdAt: Date?
+struct Event: Codable, Identifiable, Hashable {
+    let id              : UUID
+    let title           : String
+    let slug            : String
+    let description     : String?
+    let category        : String?
+    let status          : String?
+    let visibility      : String?
+    let venueName       : String?
+    let venueAddress    : String?
+    let city            : String?
+    let state           : String?
+    let latitude        : Double?
+    let longitude       : Double?
+    let startTime       : Date
+    let endTime         : Date
+    let coverImageUrl   : String?
+    let dressCode       : String?
+    let joinCode        : String
+    let privateJoinCode : String
+    let giftingEnabled  : Bool
+    let maxCapacity     : Int?
+    let createdAt       : Date?
+    let isPaid          : Bool
+    let creatorName     : String?
+    let metadata        : [String: String]?
  
     // Computed properties for UI display.
  
@@ -61,16 +64,18 @@ struct Event: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case id, title, slug, description, category, status, visibility
         case latitude, longitude, city, state
-        case venueName = "venue_name"
-        case venueAddress = "venue_address"
-        case startTime = "start_time"
-        case endTime = "end_time"
-        case coverImageUrl = "cover_image_url"
-        case dressCode = "dress_code"
-        case joinCode = "join_code"
+        case venueName       = "venue_name"
+        case venueAddress    = "venue_address"
+        case startTime       = "start_time"
+        case endTime         = "end_time"
+        case coverImageUrl   = "cover_image_url"
+        case dressCode       = "dress_code"
+        case joinCode        = "join_code"
         case privateJoinCode = "private_join_code"
-        case giftingEnabled = "gifting_enabled"
-        case maxCapacity = "max_capacity"
-        case createdAt = "created_at"
+        case giftingEnabled  = "gifting_enabled"
+        case maxCapacity     = "max_capacity"
+        case createdAt       = "created_at"
+        case isPaid          = "is_paid"
+        case creatorName     = "creator_name"
     }
 }

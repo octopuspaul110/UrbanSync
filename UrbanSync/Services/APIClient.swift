@@ -29,7 +29,6 @@ enum APIError : LocalizedError {
 }
 
 class APIClient {
-    
     static let shared = APIClient()
     
 //    Base url for all API calls.
@@ -76,7 +75,7 @@ class APIClient {
     }
     
 //    Core request method
-//    Every public method (get, post,put, delete) calls this,builds urlrequest, adds headers, sends it and decode response.
+//    Every public method (get, post,put, delete) calls this,builds urlRequest, adds headers, sends it and decode response.
     private func request<T : Decodable>(
         method          : String,
         path            : String,
@@ -189,13 +188,15 @@ class APIClient {
     }
 }
 
-struct AnyEncodable : Encodable {
-    private let _encode : (Encoder) throws -> Void
-    init(_ wrapped : any Encodable) {
-        _encode = wrapped.encode
+struct AnyEncodable: Encodable {
+    private let encode: (Encoder) throws -> Void
+
+    init(_ wrapped: any Encodable) {
+        self.encode = wrapped.encode
     }
+
     func encode(to encoder: Encoder) throws {
-        try _encode(encoder)
+        try encode(encoder)
     }
 }
 

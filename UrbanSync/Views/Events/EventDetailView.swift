@@ -16,32 +16,47 @@ struct EventDetailView: View {
     @State private var rsvpCount : Int = 0
     @State private var isLoading : Bool = true
     @State private var showTicketPurchase : Bool = false
+    @State private var scrollOffset: CGFloat = 0
+    
+    private var isScrolled: Bool { scrollOffset > 180 }
     
     private func fallbackColor(_ cat : String) -> Color {
         switch cat.lowercased() {
-        case "sports":          return .green
-        case "concert":         return .orange
-        case "tech":            return .blue
-        case "celebration":     return .pink
-        case "nightlife":       return .purple
-        case "heritage":        return .brown
-        case "conference":      return .teal
-        case "corporate":       return .yellow
-        case "art":             return .indigo
+        case "sports"       :   return .green
+        case "concert"      :   return .orange
+        case "tech"         :   return .blue
+        case "celebration"  :   return .pink
+        case "nightlife"    :   return .purple
+        case "heritage"     :   return .brown
+        case "conference"   :   return .teal
+        case "corporate"    :   return .yellow
+        case "art"          :   return .indigo
         case "public_square":   return .cyan
-        default:                return Color.urbanAccent
+        default             :   return Color.urbanAccent
         }
     }
     
     var body: some View {
-        ZStack {
+        ZStack(alignment : .top) {
             Color.urbanBackground.ignoresSafeArea()
             
             if isLoading {
                 ProgressView().tint(.urbanAccent)
             } else if let event = event {
+                
+//                Scrollable content
                 ScrollView {
                     VStack(alignment : .leading,spacing : 0) {
+                        
+                        // Scroll offset tracker
+                        GeometryReader { geo in
+                            Color.clear.preference(
+                                key: ScrollOffsetKey.self,
+                                value: -geo.frame(in: .named("detailScroll")).minY
+                            )
+                        }
+                        .frame(height: 0)
+                        
 //                        Cover Image with Gradient overlay
                         ZStack(alignment: .bottomLeading){
                             if let url = event.coverImageUrl.flatMap({URL(string : $0)}) {
@@ -51,9 +66,15 @@ struct EventDetailView: View {
                                     .frame(height: 250)
                                     .clipped()
                             } else {
-                                Rectangle()
-                                    .fill(Color.categoryColor(for : event.category ?? ""))
-                                    .frame(height: 250)
+                                ZStack {
+                                    fallbackColor(event.category ?? "")
+                                        .opacity(0.3)
+                                        .frame(height: 250)
+                                    Image(systemName: categoryIcon(event.category ?? ""))
+                                        .font(.system(size: 64))
+                                        .foregroundColor(fallbackColor(event.category ?? "").opacity(0.6))
+                                }
+                                .frame(height: 250)
                             }
 //                            Dark gradient from bottom for text readability.
                             LinearGradient(
@@ -66,6 +87,14 @@ struct EventDetailView: View {
                             
 //                            Status Badges
                             HStack(spacing : 8) {
+                                if let category = event.category {
+                                    EventBadge(
+                                        text: category.replacingOccurrences(of: "_", with: " ").capitalized,
+                                        color: fallbackColor(category),
+                                        icon: categoryIcon(category)
+                                    )
+                                }
+                                
                                 if event.isLive {
                                     EventBadge(
                                         text: "LIVE",
@@ -79,22 +108,14 @@ struct EventDetailView: View {
                                         icon: "clock.fill"
                                     )
                                 }
-                                if event.visibility == "private" {
-                                    EventBadge(
-                                        text: "PRIVATE",
-                                        color: .urbanAccent,
-                                        icon: "lock.fill"
-                                    )
-                                } else {
-                                    EventBadge(
-                                        text: "PUBLIC",
-                                        color: .urbanMint,
-                                        icon: "globe"
-                                    )
-                                }
+                                EventBadge(
+                                    text: event.visibility == "private" ? "PRIVATE" : "PUBLIC",
+                                    color: event.visibility == "private" ? .urbanAccent : .urbanMint,
+                                    icon: event.visibility == "private" ? "lock.fill" : "globe"
+                                )
                                 if let cheapest = tiers.min(by: {$0.priceKobo < $1.priceKobo}){
                                     EventBadge(
-                                        text: cheapest.priceKobo == 0 ? "FREE" : cheapest.formattedPrice,
+                                        text: cheapest.priceKobo == 0 ? "FREE RSVP" : cheapest.formattedPrice,
                                         color: cheapest.priceKobo == 0 ? .urbanMint : .urbanGold,
                                         icon: cheapest.priceKobo == 0 ? "gift.fill" : "ticket.fill"
                                     )
@@ -108,7 +129,7 @@ struct EventDetailView: View {
                             VStack(alignment: .leading,spacing : 4) {
                                 GlowingProgressBar(
                                     progress: event.startTime.progressUntilStart(createdAt: created),
-                                    color: Color.categoryColor(for: event.category ?? "")
+//                                    color: Color.categoryColor(for: event.category ?? "")
                                 )
                                 Text(event.startTime.relativeFormatted)
                                     .font(.jakartaCaption)
@@ -124,15 +145,52 @@ struct EventDetailView: View {
                                 .font(.jakartaTitle.weight(.bold))
                                 .foregroundColor(.urbanTextPrimary)
                             
-//                            Date and Time
-                            HStack(spacing : 12) {
-                                detailRow(icon : "calendar",text : event.startTime.fullFormatted)
+                            // Creator row
+                            if let creator = event.creatorName {
+                                HStack(spacing: 10) {
+                                    // Creator avatar circle
+                                    ZStack {
+                                        Circle()
+                                            .fill(fallbackColor(event.category ?? "").opacity(0.3))
+                                            .frame(width: 36, height: 36)
+                                        Text(creator.prefix(2).uppercased())
+                                            .font(.jakartaCaption.weight(.medium))
+                                            .foregroundColor(fallbackColor(event.category ?? ""))
+                                    }
+                                    VStack(alignment: .leading, spacing: 1) {
+                                        Text("Hosted by")
+                                            .font(.jakartaCaption)
+                                            .foregroundColor(.urbanTextTertiary)
+                                        Text(creator)
+                                            .font(.jakartaSubheadline.weight(.medium))
+                                            .foregroundColor(.urbanTextSecondary)
+                                    }
+                                }
                             }
+                            
+//                            Date and Time
+                            detailRow(
+                                icon : "calendar",
+                                text : event.startTime.fullFormatted
+                            )
                             
 //                            Venue
                             if let venue = event.venueName {
-                                detailRow(icon : "mappin.and.ellipse",text : "\(venue)\(event.city.map{",\($0)"} ?? "")")
+                                detailRow(
+                                    icon : "mappin.and.ellipse",
+                                    text : "\(venue)\(event.city.map{", \($0)"} ?? "")\(event.state.map { ", \($0)" } ?? "")"
+                                )
                             }
+                            
+                            // Dress code
+                            if let dress = event.dressCode, !dress.isEmpty {
+                                detailRow(icon: "tshirt.fill", text: dress)
+                            }
+                            
+                            // RSVP Count
+                            detailRow(icon : "person.2.fill",text : "\(rsvpCount) attending")
+                            
+//                            Map
                             if let lat = event.latitude, let lng = event.longitude{
                                 VStack(spacing : 12){
 //                                    Small map preview showing the event pin.
@@ -140,7 +198,7 @@ struct EventDetailView: View {
                                         center: CLLocationCoordinate2D(latitude: lat, longitude: lng),
                                         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
                                     ))){
-                                        Marker(event.venueName >> event.title,coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lng))
+                                        Marker(event.venueName ?? event.title,coordinate: CLLocationCoordinate2D(latitude: lat, longitude: lng))
                                             .tint(Color.categoryColor(for: event.category ?? ""))
                                     }
                                     .frame(height: 150)
@@ -154,7 +212,9 @@ struct EventDetailView: View {
 //                                            Apple Maps URL scheme.
 //                                            "daddr" = destination address (lat,lng)
 //                                            "dirflg=d = driving directions.
-                                            let url = URL(string : "http://maps.apple.com/?daddr=\(lat),\(lng)&dirflg=d")!
+                                            if let url = URL(string : "http://maps.apple.com/?daddr=\(lat),\(lng)&dirflg=d"){
+                                                UIApplication.shared.open(url)
+                                            }
                                         } label : {
                                             Label("Apple Maps",systemImage : "map.fill")
                                                 .font(.jakartaSubheadline)
@@ -169,14 +229,12 @@ struct EventDetailView: View {
                                             let googleMapsURL = URL(string: "comgooglemaps://?daddr=\(lat),\(lng)&directionsmode=driving")!
 //                                            Google Maps URL scheme
                                             let webURL = URL(string: "https://www.google.com/maps/dir/?api=1&destination=\(lat),\(lng)")!
-                                            if UIApplication.shared.canOpenURL(googleMapsURL) {
-                                                UIApplication.shared.open(googleMapsURL)
-                                            } else {
-                                                UIApplication.shared.open(webURL)
-                                            }
+                                            UIApplication.shared.open(
+                                                UIApplication.shared.canOpenURL(googleMapsURL) ? googleMapsURL : webURL
+                                            )
                                         } label : {
                                             Label("Google Maps",systemImage: "location.fill")
-                                                .font(.jakarataSubheadline)
+                                                .font(.jakartaSubheadline)
                                                 .frame(maxWidth: .infinity)
                                                 .padding(.vertical,10)
                                                 .background(Color.urbanSurface)
@@ -186,10 +244,7 @@ struct EventDetailView: View {
                                     }
                                 }.padding(.top,8)
                             }
-                            
-//                            RSVP Count
-                            detailRow(icon : "person.2.fill",text : "\(rsvpCount) attending")
-                            
+
 //                            Description
                             if let desc = event.description {
                                 Text(desc)
@@ -198,11 +253,37 @@ struct EventDetailView: View {
                                     .padding(.top,8)
                             }
                             
+                            // Metadata
+                            if let metadata = event.metadata,
+                               let dict = try? JSONSerialization.jsonObject(with: JSONEncoder().encode(metadata)) as? [String: String],
+                               !dict.isEmpty {
+                                VStack(alignment: .leading, spacing: 10) {
+                                    Text("Extra details")
+                                        .font(.jakartaHeadline.weight(.medium))
+                                        .foregroundColor(.urbanTextPrimary)
+                                    ForEach(dict.sorted(by: { $0.key < $1.key }), id: \.key) { key, value in
+                                        VStack(alignment: .leading, spacing: 3) {
+                                            Text(key.replacingOccurrences(of: "_", with: " ").capitalized)
+                                                .font(.jakartaCaption)
+                                                .foregroundColor(.urbanTextTertiary)
+                                            Text(value)
+                                                .font(.jakartaSubheadline)
+                                                .foregroundColor(.urbanTextSecondary)
+                                        }
+                                        .padding(12)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .background(Color.urbanSurface)
+                                        .cornerRadius(10)
+                                    }
+                                }
+                                .padding(.top, 8)
+                            }
+                            
 //                            Ticket Tiers
                             if !tiers.isEmpty {
                                 VStack(alignment: .leading,spacing: 12) {
                                     Text("Tickets")
-                                        .font(.headline)
+                                        .font(.jakartaHeadline.weight(.medium))
                                         .foregroundColor(.urbanTextPrimary)
                                     ForEach(tiers) { tier in
                                         tierCard(tier)
@@ -210,28 +291,94 @@ struct EventDetailView: View {
                                 }
                                 .padding(.top,8)
                             }
+                            Spacer(minLength: 80)
                         }
                         .padding(16)
                     }
                 }
+                .coordinateSpace(name: "detailScroll")
+                .onPreferenceChange(ScrollOffsetKey.self) { value in
+                    withAnimation(.easeInOut(duration: 0.25)) {
+                        scrollOffset = value
+                    }
+                }
+                
+                // Sticky nav bar — always on top
+                VStack(spacing: 0) {
+                    HStack(spacing: 10) {
+                        // Back button
+                        Button {
+                            // dismiss handled by NavigationStack
+                        } label: {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: 16, weight: .medium))
+                                .foregroundColor(.white)
+                                .frame(width: 32, height: 32)
+                                .background(isScrolled ? Color.clear : Color.black.opacity(0.3))
+                                .clipShape(Circle())
+                        }
+
+                        // Creator avatar + title fade in on scroll
+                        if isScrolled, let creator = event.creatorName {
+                            HStack(spacing: 8) {
+                                ZStack {
+                                    Circle()
+                                        .fill(fallbackColor(event.category ?? "").opacity(0.4))
+                                        .frame(width: 28, height: 28)
+                                    Text(creator.prefix(2).uppercased())
+                                        .font(.system(size: 10, weight: .medium))
+                                        .foregroundColor(.white)
+                                }
+                                Text(event.title)
+                                    .font(.jakartaSubheadline.weight(.medium))
+                                    .foregroundColor(.white)
+                                    .lineLimit(1)
+                            }
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                        }
+
+                        Spacer()
+
+                        // Share
+                        ShareLink(item: URL(string: "https://urbansync.app/e/\(event.slug)")!) {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.system(size: 16))
+                                .foregroundColor(.white)
+                                .frame(width: 32, height: 32)
+                                .background(isScrolled ? Color.white.opacity(0.15) : Color.black.opacity(0.3))
+                                .clipShape(Circle())
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .padding(.bottom, 10)
+
+                    if isScrolled {
+                        Divider()
+                            .background(Color.white.opacity(0.1))
+                    }
+                }
+                .background(
+                    isScrolled
+                        ? Color.urbanBackground.opacity(0.85)
+                        : Color.clear
+                )
+                .background {
+                    if isScrolled {
+                        Color.urbanBackground
+                            .background(.ultraThinMaterial)
+                    }
+                }
+                .animation(.easeInOut(duration: 0.3), value: isScrolled)
+                
 //                Bottom Action Bar
                 VStack {
                     Spacer()
                     HStack(spacing : 12) {
-//                        share button
-                        ShareLink(item: URL(string:"https://urbansync.app/e/\(event.slug)")!){
-                            Image(systemName: "square.and.arrow.up")
-                                .frame(width: 50,height: 50)
-                                .background(Color.urbanSurface)
-                                .cornerRadius(12)
-                                .foregroundColor(.urbanTextPrimary)
-                        }
-                        
-//                        Get Tickets button
-                        Button{
+                        Button {
                             showTicketPurchase = true
-                        } label : {
-                            Text(tiers.allSatisfy({$0.priceKobo == 0}) ? "RSVP FREE" : "GET Tickets")
+                        } label: {
+                            Text(tiers.allSatisfy { $0.priceKobo == 0 } ? "RSVP Free" : "Get Tickets")
                                 .fontWeight(.bold)
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -246,14 +393,26 @@ struct EventDetailView: View {
                 }
             }
         }
-        .navigationBarTitleDisplayMode(.inline)
-        .task {
-            await fetchEventDetail()
-        }
+        .navigationBarHidden(true) // we handle our own nav bar
+        .task { await fetchEventDetail() }
         .sheet(isPresented: $showTicketPurchase) {
             if let event = event {
-                TicketPurchaseView(event : event,tiers : tiers)
+                TicketPurchaseView(event: event, tiers: tiers)
             }
+        }
+    }
+    private func categoryIcon(_ cat: String) -> String {
+        switch cat.lowercased() {
+        case "sports":        return "sportscourt.fill"
+        case "concert":       return "music.mic"
+        case "tech":          return "laptopcomputer"
+        case "celebration":   return "party.popper.fill"
+        case "nightlife":     return "moon.stars.fill"
+        case "heritage":      return "building.columns.fill"
+        case "corporate":     return "briefcase.fill"
+        case "community":     return "person.3.fill"
+        case "public_square": return "megaphone.fill"
+        default:              return "calendar"
         }
     }
     
