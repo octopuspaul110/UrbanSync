@@ -28,12 +28,14 @@ class AuthViewModel{
     var errorMessage : String?
     
     init() {
-//        Check if user is already logged in from a previous session.
-//        Firebase persists the session on device, user only logs in once
         self.currentUser = Auth.auth().currentUser
         if currentUser != nil {
+            isLoading = true
             Task {
                 await fetchProfile()
+                await MainActor.run {
+                    isLoading = false
+                }
             }
         }
     }
@@ -186,13 +188,13 @@ class AuthViewModel{
             struct ProfileResponse: Decodable {
                 let user: User
             }
-            let response : ProfileResponse = try await APIClient.shared.get("/api/auth/profile")
-            self.userProfile = response.user
-            self.onboardingCompleted = response.user.onBoardingCompleted
-//            backend wraps user in a "user" key along with stats.
-            
-        }catch{
-//            Silently fail - user will see login screen
+            let response: ProfileResponse = try await APIClient.shared.get("/api/auth/profile")
+            await MainActor.run {
+                self.userProfile         = response.user
+                self.onboardingCompleted = response.user.onBoardingCompleted
+            }
+        } catch {
+            // silently fail
         }
     }
     

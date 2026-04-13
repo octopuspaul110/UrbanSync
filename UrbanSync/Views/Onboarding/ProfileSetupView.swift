@@ -121,7 +121,7 @@ struct ProfileSetupView: View {
                     .lineLimit(3...5)
                     .font(.jakartaBody)
                     .urbanField()
-                    .onChanged(of : bio){
+                    .onChange(of : bio){
                         _,newValue in
                         if newValue.count > 150 {
                             bio = String(newValue.prefix(150))}

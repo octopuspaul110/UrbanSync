@@ -16,7 +16,7 @@ struct WelcomeOnboardingView: View {
         (
             "sparkles",
             "Discover Events",
-            "Find owambe, tech meetups, concerts, Religious Events and cultural festivals happening near you. Personalized to you interests"
+            "Find owambe, tech meetups, concerts, religious Events and cultural festivals happening near you. Personalized to you interests"
         ),
         (
             "paperplane.fill",
@@ -29,7 +29,7 @@ struct WelcomeOnboardingView: View {
             "Buy tickets. Free events? just RSVP. Your QR code ticket is always in the app."
         ),
         (
-            "map.fill",
+            "mappin.and.ellipse",
             "Events on a Map",
             "See what's happening near you on a map. Filter by date, category and more. Tap a pin, see the events,get directions."
         ),
@@ -68,7 +68,7 @@ struct WelcomeOnboardingView: View {
                                 .font(.system(size: 80))
                                 .foregroundStyle(
                                     LinearGradient(
-                                        colors: [.urbanAccent,.urbanCoral],
+                                        colors: [.entryColor,.urbanCoral],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     )

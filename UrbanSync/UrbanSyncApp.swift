@@ -12,10 +12,8 @@ import GoogleSignIn
 @main
 struct UrbanSyncApp: App {
     
-    init() {
-        FirebaseApp.configure()
-//        NotificationService.shared.requestPermission()
-    }
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -23,5 +21,20 @@ struct UrbanSyncApp: App {
                     GIDSignIn.sharedInstance.handle(url)
             }
         }
+    }
+}
+
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        FirebaseApp.configure()
+        
+        if let clientID = FirebaseApp.app()?.options.clientID {
+            let config = GIDConfiguration(clientID: clientID)
+            GIDSignIn.sharedInstance.configuration = config
+        }
+        return true
     }
 }

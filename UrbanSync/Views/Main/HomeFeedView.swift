@@ -324,6 +324,6 @@ struct HomeFeedView: View {
         }
 }
 
-//#Preview {
-//    HomeFeedView()
-//}
+#Preview {
+    HomeFeedView()
+}

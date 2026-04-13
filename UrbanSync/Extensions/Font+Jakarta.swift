@@ -14,6 +14,10 @@ extension Font {
         .custom(weight.fontName, size: size)
     }
     
+    static func chillax(size: CGFloat) -> Font {
+        return .custom("Chillax-Variable", size: size)
+    }
+    
     static let jakartaLargeTitle        = Font.custom("PlusJakartaSans-Bold", size: 34)
     static let jakartaExtraLargeTitle   = Font.custom("PlusJakartaSans-ExtraBold", size: 34)
     static let jakartaTitle             = Font.custom("PlusJakartaSans-Bold", size: 28)

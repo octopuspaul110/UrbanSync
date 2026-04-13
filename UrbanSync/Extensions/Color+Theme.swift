@@ -10,16 +10,18 @@ import SwiftUI
 //Extension on Color adds brand colors as static properties.
 extension Color {
 //    Backgrounds, darkest color. for main app background.
-    static let urbanBackground = Color(hex : "0D0D1A")
+    static let urbanBackground = Color(hex : "000000")
     
 //    Slightly lighter surface cards, sheets and elevated content.
     static let urbanSurface = Color(hex : "1A1A2E")
     
 //    lighter surface for nested elements
     static let urbanSurfaceLight = Color(hex : "252542")
+    static let urbanAccentEnd    = Color(hex: "e63264")
+    static let entryColor        = Color(hex: "CCCCFF")
     
 //    Accent Colors, Primary accent- electric purple. Used for primary buttons,selected tab icons and active states
-    static let urbanAccent = Color(hex : "7B2FFF")
+    static let urbanAccent = Color(hex : "4f0c28")
     
 //    Secondary accent - warm coral/orange for badges, notifications count and live indicator
     static let urbanCoral = Color(hex : "FF6B6B")

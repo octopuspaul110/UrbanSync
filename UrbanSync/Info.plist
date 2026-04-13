@@ -9,7 +9,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.221777926063-cocvvqeafbaf56j3bc8qkao2spfpg327</string>
+				<string>com.googleusercontent.apps.221777926063-edu8ms8tsesobfvtm5es8qlum3sqgnqr</string>
 			</array>
 		</dict>
 	</array>
@@ -21,20 +21,20 @@
 	<array>
 		<string>Chillax-Variable.ttf</string>
 		<string>ClashDisplay-Variable.ttf</string>
-		<string>PlusJarkartaSans-Bold.ttf</string>
-		<string>PlusJarkartaSans-BoldItalic.ttf</string>
-		<string>PlusJarkartaSans-ExtraBold.ttf</string>
-		<string>PlusJarkartaSans-ExtraBoldItalic.ttf</string>
-		<string>PlusJarkartaSans-ExtraLight.ttf</string>
-		<string>PlusJarkartaSans-ExtraLightItalic.ttf</string>
-		<string>PlusJarkartaSans-Italic.ttf</string>
-		<string>PlusJarkartaSans-Light.ttf</string>
-		<string>PlusJarkartaSans-LightItalic.ttf</string>
-		<string>PlusJarkartaSans-Medium.ttf</string>
-		<string>PlusJarkartaSans-MediumItalic.ttf</string>
-		<string>PlusJarkartaSans-Regular.ttf</string>
-		<string>PlusJarkartaSans-SemiBold.ttf</string>
-		<string>PlusJarkartaSans-SemiBoldITalic.ttf</string>
+		<string>PlusJakartaSans-Bold.ttf</string>
+		<string>PlusJakartaSans-BoldItalic.ttf</string>
+		<string>PlusJakartaSans-ExtraBold.ttf</string>
+		<string>PlusJakartaSans-ExtraBoldItalic.ttf</string>
+		<string>PlusJakartaSans-ExtraLight.ttf</string>
+		<string>PlusJakartaSans-ExtraLightItalic.ttf</string>
+		<string>PlusJakartaSans-Italic.ttf</string>
+		<string>PlusJakartaSans-Light.ttf</string>
+		<string>PlusJakartaSans-LightItalic.ttf</string>
+		<string>PlusJakartaSans-Medium.ttf</string>
+		<string>PlusJakartaSans-MediumItalic.ttf</string>
+		<string>PlusJakartaSans-Regular.ttf</string>
+		<string>PlusJakartaSans-SemiBold.ttf</string>
+		<string>PlusJakartaSans-SemiBoldItalic.ttf</string>
 	</array>
 </dict>
 </plist>

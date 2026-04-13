@@ -104,7 +104,7 @@ struct LoginView: View {
                             Task {await authVM.signInWithGoogle()}
                         } label : {
                             HStack {
-                                Label("Sign in with Google", systemImage: "google")
+                                Label("Sign in with Google", systemImage: "g.circle.fill")
                             }
                             .frame(maxWidth : .infinity)
                             .padding()
@@ -131,7 +131,7 @@ struct LoginView: View {
                             }
                         }
                         .signInWithAppleButtonStyle(.white)
-                        .frame(height: 50)
+                        .frame(height: 45)
                         .cornerRadius(12)
                         
 //                        Register Link
@@ -153,7 +153,7 @@ struct LoginView: View {
             .navigationDestination(
                 isPresented: $showRegister,
             ) {
-                RegisterView(auth : authVM)
+                RegisterView(authVM : authVM)
             }
             .alert("Error", isPresented: .init(
                 get: {authVM.errorMessage != nil},
@@ -169,6 +169,6 @@ struct LoginView: View {
     }
 }
 
-//#Preview {
-//    LoginView()
-//}
+#Preview {
+    LoginView(authVM: AuthViewModel)
+}
