@@ -30,10 +30,8 @@ struct CreateEventView: View {
     @State private var slug                   = ""
     
     let categories = [
-        ("celebration", "Celebrations"),
-        ("nightlife", "Nightlife"),
         ("tech", "Tech"),
-        ("heritage", "Heritage"),
+        ("nightlife", "Nightlife"),
         ("religious", "Religious"),
         ("corporate", "Corporate"),
         ("community", "Community"),
@@ -48,24 +46,38 @@ struct CreateEventView: View {
                 Color.urbanBackground.ignoresSafeArea()
                 
                 ScrollView {
-                    VStack(spacing : 20){
+                    VStack(alignment : .leading,spacing : 20){
 //                        Cover Image
                         coverImageSection
                         
 //                        Title
-                        formField(title : "Event Title") {
-                            TextField("Enter the Title of your Event",text: $vm.title)
+                        VStack(alignment : .leading,spacing: 0.2) {
+                            formField(title : "Event Title") {
+                                TextField("Enter the Title of your Event",text: $vm.title)
+                            }
+                            if vm.title.isEmpty {
+                                Text("Event title cannot be empty")
+                                    .font(.jakartaCaption)
+                                    .foregroundColor(.urbanCoral)
+                            }
                         }
                         
 //                        Category Picker
-                        formField(title : "Category"){
+                        VStack(alignment: .leading,spacing: 8) {
+                            Text("Event Category")
+                                .font(.caption)
+                                .foregroundColor(.urbanTextPrimary)
                             Picker("Category",selection: $vm.category){
                                 ForEach(categories,id : \.0) {cat in
                                     Text(cat.1).tag(cat.0)
                                 }
                             }
                             .pickerStyle(.menu)
-                            .tint(.urbanAccent)
+                            .tint(.urbanCoral)
+                            .padding(8)
+                            .background(Color.urbanSurface)
+                            .cornerRadius(12)
+                            .foregroundColor(.urbanTextPrimary)
                         }
                         
 //                        Description
@@ -123,15 +135,19 @@ struct CreateEventView: View {
                     .padding(16)
                 }
             }
-            .navigationTitle(Text("Create Event"))
+            .navigationTitle(Text("Create Event").font(.jakartaHeadline))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button{
                         dismiss()
+                    }label :{
+                        Image(systemName: "xmark")
+                            .font(.system(size: 14, weight: .medium))
                     }
                     .foregroundColor(.urbanTextPrimary)
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             .overlay {
                 AirplaneAnimation(
                     isShowing       : $showAirplane,
@@ -148,7 +164,7 @@ struct CreateEventView: View {
     @ViewBuilder
     private var recurrenceSection: some View {
         formField(title: "Repeat") {
-            Picker("", selection: $vm.recurrence) {
+            Picker("", selection: $vm.recurrence_frequency) {
                 Text("Does not repeat").tag("none")
                 Text("Daily").tag("daily")
                 Text("Weekly").tag("weekly")
@@ -157,16 +173,21 @@ struct CreateEventView: View {
                 Text("Custom dates").tag("custom")
             }
             .pickerStyle(.menu)
-            .tint(.urbanAccent)
+            .tint(.urbanCoral)
+            .padding(.vertical,-10)
+            .background(Color.urbanSurface)
+            .cornerRadius(12)
+            .foregroundColor(.urbanTextPrimary)
+            
         }
 
-        if vm.recurrence != "none" {
-            if vm.recurrence == "weekly" || vm.recurrence == "biweekly" {
+        if vm.recurrence_frequency != "none" {
+            if vm.recurrence_frequency == "weekly" || vm.recurrence_frequency == "biweekly" {
                 dayPickerSection
             }
 
-            if vm.recurrence == "daily" || vm.recurrence == "monthly" {
-                formField(title: vm.recurrence == "daily" ? "Every N days" : "Every N months") {
+            if vm.recurrence_frequency == "daily" || vm.recurrence_frequency == "monthly" {
+                formField(title: vm.recurrence_frequency == "daily" ? "Every N days" : "Every N months") {
                     Stepper("\(vm.recurrenceInterval)", value: $vm.recurrenceInterval, in: 1...12)
                         .foregroundColor(.urbanTextPrimary)
                 }
@@ -295,7 +316,7 @@ struct CreateEventView: View {
 //    recurrence summary
     private var recurrenceSummary: String {
         let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-        switch vm.recurrence {
+        switch vm.recurrence_frequency {
         case "daily":
             return "Repeats every \(vm.recurrenceInterval == 1 ? "day" : "\(vm.recurrenceInterval) days")"
         case "weekly":

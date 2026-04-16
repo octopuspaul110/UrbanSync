@@ -22,6 +22,8 @@ struct TicketPurchaseView: View {
     @State private var webViewLoading              = false
     @Environment(\.dismiss) private var dismiss
     
+    @State private var showConfetti = false
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -33,6 +35,7 @@ struct TicketPurchaseView: View {
                         PaystackWebView(urlString : url,onComplete: {
                             purchaseCompleted = true
                             paymentURL        = nil
+                            showConfetti      = true
                         }, isLoading: $webViewLoading)
                     }
                     if webViewLoading {
@@ -60,6 +63,9 @@ struct TicketPurchaseView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
+            }
+            .overlay {
+                ConfettiView(isShowing: $showConfetti)
             }
         }
     }
@@ -155,6 +161,7 @@ struct TicketPurchaseView: View {
     }
     
     private var successView: some View {
+        
         VStack(spacing: 20) {
             Image(systemName: "checkmark.circle.fill")
                 .font(.system(size: 64))
@@ -199,6 +206,7 @@ struct TicketPurchaseView: View {
             } else {
                 // Free ticket — confirmed immediately
                 purchaseCompleted = true
+                showConfetti = true
                 playSuccessSound()
             }
         } catch let apiError as APIError {
@@ -240,6 +248,69 @@ struct TicketPurchaseView: View {
         }
 }
 
-//#Preview {
-//    TicketPurchaseView()
-//}
+#Preview {
+    TicketPurchaseView(
+        event: Event(
+            id: UUID(),
+            title: "Sample Event",
+            slug: "sample-event",
+            description: "This is a sample event for preview purposes.",
+            category: nil,
+            status: nil,
+            visibility: nil,
+            venueName: "Sample Venue",
+            venueAddress: "123 Main St",
+            city: "Sample City",
+            state: nil,
+            latitude: nil,
+            longitude: nil,
+            startTime: Date(),
+            endTime: Date().addingTimeInterval(3600),
+            coverImageUrl: nil,
+            dressCode: nil,
+            joinCode: "ABC123",
+            privateJoinCode: "PRIVATE123",
+            giftingEnabled: false,
+            maxCapacity: 100,
+            createdAt: Date(),
+            isPaid: false,
+            creatorName: "Host Name",
+            metadata: nil,
+            recurrence: nil,
+            recurrenceDays: nil,
+            recurrenceInterval: nil,
+            recurrenceEndDate: nil,
+            occurrenceNumber: nil,
+            recurrenceParentId: nil
+        ),
+        tiers: [
+            TicketTier(
+                id: UUID(),
+                name: "Regular",
+                description: nil,
+                priceKobo: 1000,
+                quantityTotal: 100,
+                quantitySold: 10,
+                available: nil
+            ),
+            TicketTier(
+                id: UUID(),
+                name: "VIP",
+                description: nil,
+                priceKobo: 5000,
+                quantityTotal: 50,
+                quantitySold: 25,
+                available: nil
+            ),
+            TicketTier(
+                id: UUID(),
+                name: "Free",
+                description: nil,
+                priceKobo: 0,
+                quantityTotal: 20,
+                quantitySold: 5,
+                available: nil
+            )
+        ]
+    )
+}
